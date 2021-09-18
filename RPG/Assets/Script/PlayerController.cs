@@ -11,21 +11,10 @@ public class PlayerController : MonoBehaviour
 
     PlayerState state;
 
-    Texture2D attackCursor;
-    Texture2D handCursor;
 
-    
+    GameObject lockTarget;
 
-    void Start()
-    {
-        attackCursor = Managers.Resource.Load<Texture2D>("Textures/Cursor/Attack");
-        handCursor = Managers.Resource.Load<Texture2D>("Textures/Cursor/Basic");
-
-        stat = gameObject.GetComponent<PlayerStat>();
-        state = PlayerState.Idle; 
-        Managers.Input.MouseAction -= OnMouseEvent; //이벤트가 두번 추가되는것을 막기위해 한번 뺀후에 진행
-        Managers.Input.MouseAction += OnMouseEvent;
-    }
+    int lMask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
 
     public enum PlayerState
     {
@@ -35,10 +24,17 @@ public class PlayerController : MonoBehaviour
         Die,
     }
 
+    void Start()
+    {
+        stat = gameObject.GetComponent<PlayerStat>();
+        state = PlayerState.Idle;
+
+        Managers.Input.MouseAction -= OnMouseEvent; //이벤트가 두번 추가되는것을 막기위해 한번 뺀후에 진행
+        Managers.Input.MouseAction += OnMouseEvent;
+    }
+
     void Update()
     {
-        UpdateMouseCursor();
-
         switch (state)
         {
             case PlayerState.Idle:
@@ -50,36 +46,27 @@ public class PlayerController : MonoBehaviour
                 UpdateAttack();
                 break;
             case PlayerState.Die:
-                UpdateDie();
                 break;
         }
         
     }
 
-    int lMask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
-
-    void UpdateMouseCursor()
+    void UpdateMoving()  
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100.0f, lMask))
+        //몬스터가 내 사정거리보다 가까우면 공격
+        if (lockTarget != null)
         {
-            if (hit.collider.gameObject.layer == (int)Define.Layer.Ground)
+            float distance = (destPos - transform.position).magnitude;
+            if(distance <= 1/*사정거리*/)
             {
-                Cursor.SetCursor(handCursor, new Vector2(handCursor.width / 4, 0), CursorMode.Auto);
-            }
-            else
-            {
-                Cursor.SetCursor(attackCursor, new Vector2(attackCursor.width / 5, 0), CursorMode.Auto);
+                state = PlayerState.Attack;
+                return;
             }
         }
-    }
 
-
-    void UpdateMoving()
-    {
+        //이동
         Vector3 dir = destPos - transform.position; //방향구하고
+
         if (dir.magnitude < 0.1f) // 도착지랑 거리가 가까우면 이동안함
         {
             state = PlayerState.Idle;
@@ -107,39 +94,92 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     void UpdateAttack()
     {
-
+        Debug.Log("공격");
+        if (stopAttack)
+        {
+            state = PlayerState.Idle;
+        }
+        else
+        {
+            state = PlayerState.Attack;
+        }
     }
 
-    void UpdateDie()
-    {
-
-    }
-
+    bool stopAttack = false;
     void OnMouseEvent(Define.MouseEvent evt)
     {
-        if (state == PlayerState.Die)
-            return;
+        switch (state) 
+        {
+            case PlayerState.Idle:
+                OnMouseEvent_NotRunInAttack(evt); //playerstate.Skill 상태일때 이동관련 스크립트가 실행되지 않도록 만듬
+                break;
+            case PlayerState.Moving:
+                OnMouseEvent_NotRunInAttack(evt);
+                break;
+            case PlayerState.Attack:
+                {
+                    if(evt == Define.MouseEvent.PointerUp) //마우스를 때면 공격이 멈추도록 만듬 
+                    {
+                        stopAttack = true;
+                    }
+                }
+                break;
+        }
+    }
 
+    void OnMouseEvent_NotRunInAttack(Define.MouseEvent evt)
+    {
+        RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
+        bool raycastHit = Physics.Raycast(ray, out hit, 100.0f, lMask);
+        //ray를 이용해 클릭한 포인트를 받아옴 
 
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100.0f, lMask))
+        switch (evt)
         {
-            destPos = hit.point;
-            state = PlayerState.Moving;
+            case Define.MouseEvent.PointerDown:
+                {
+                    if (raycastHit)
+                    {
+                        destPos = hit.point;
+                        state = PlayerState.Moving; //레이가 몬스터에 닿았건 땅에 닿았건 이동
+                        stopAttack = false; //다시 공격하기 위해 stopAttack 초기화 
 
-            if (hit.collider.gameObject.layer == (int)Define.Layer.Ground)
-            {
-                Debug.Log("Ground Click");
-            }
-            else
-            {
-                Debug.Log("Monster Click");
-                
-            }
+                        if (hit.collider.gameObject.layer == (int)Define.Layer.Monster) //레이가 몬스터에 닿았는지 땅에 닿았는지 확인 
+                        {
+                            lockTarget = hit.collider.gameObject; //몬스터에 닿았을경우 닿은 몬스터를 타겟으로 이동한다
+                        }
+                        else
+                        {
+                            lockTarget = null; //레이가 몬스터에 닿은게 아니면 타겟을 null로 
+                        }
+                    }
+                }
+                break;
+
+            case Define.MouseEvent.Press:
+                {
+                    if (lockTarget != null)
+                    {
+                        destPos = lockTarget.transform.position; //타겟이 null이 아닐경우 도착지점을 타겟으로하고 마우스를 다른곳으로 이동해도 타겟을 향해 이동한다
+                    }
+                    else
+                    {
+                        if (raycastHit)
+                        {
+                            destPos = hit.point; //레이가 땅에 닿았을경우 ray에 hit.point로 이동 
+                        }
+                    }
+                }
+                break;
+            case Define.MouseEvent.PointerUp:
+                {
+                    stopAttack = true; //마우스를 때면 공격을 멈추게 만듬
+                }
+                break;
         }
     }
 }
