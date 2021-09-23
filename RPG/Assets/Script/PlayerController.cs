@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
 
     int lMask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
 
+    float attackCoolTime = 2.0f;
+    float attackCountDown = 0.0f;
+
     public enum PlayerState
     {
         Idle,
@@ -35,6 +38,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        AttackCount();
         switch (state)
         {
             case PlayerState.Idle:
@@ -94,19 +98,40 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
+    bool canAttack = false;
     void UpdateAttack()
     {
-        Debug.Log("공격");
-        if (stopAttack)
+        if(canAttack)
         {
-            state = PlayerState.Idle;
-        }
-        else
-        {
-            state = PlayerState.Attack;
+            Debug.Log("공격");
+            canAttack = false;
+            attackCountDown = 0.0f;
+
+            if (stopAttack)
+            {
+                state = PlayerState.Idle;
+            }
+            else
+            {
+                state = PlayerState.Attack;
+            }
         }
     }
+
+    void AttackCount()
+    {
+        if(attackCountDown <= attackCoolTime)
+        {
+            attackCountDown += Time.deltaTime;
+
+            if(attackCountDown >= attackCoolTime)
+            {
+                canAttack = true;
+            }
+        }
+        
+    }
+
 
     bool stopAttack = false;
     void OnMouseEvent(Define.MouseEvent evt)
