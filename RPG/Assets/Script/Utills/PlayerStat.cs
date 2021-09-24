@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStat : stat //공통되는 부분을 중복으로 사용하지않기위해 stat스크립트를 상속받음
+public class PlayerStat : Stat //공통되는 부분을 중복으로 사용하지않기위해 stat스크립트를 상속받음
 {
     [SerializeField]
     int _exp;

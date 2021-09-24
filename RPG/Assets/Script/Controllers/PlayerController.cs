@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
 
         Managers.Input.MouseAction -= OnMouseEvent; //이벤트가 두번 추가되는것을 막기위해 한번 뺀후에 진행
         Managers.Input.MouseAction += OnMouseEvent;
+
+        Managers.UI.MakeUI(transform);
     }
 
     void Update()
@@ -104,6 +106,15 @@ public class PlayerController : MonoBehaviour
         if(canAttack)
         {
             Debug.Log("공격");
+            if(lockTarget != null)
+            {
+                Stat targetStat = lockTarget.GetComponent<Stat>();
+                Stat myStat = gameObject.GetComponent<PlayerStat>();
+                //int damage = Mathf.Clamp(myStat.Attack - targetStat.Defense,0,100); //최소값을 0, 최대값을 100으로 지정
+                int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
+                Debug.Log("데미지" + damage);
+                targetStat.Hp -= damage;
+            }
             canAttack = false;
             attackCountDown = 0.0f;
 

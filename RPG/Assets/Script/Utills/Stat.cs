@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class stat : MonoBehaviour
+public class Stat : MonoBehaviour
 {
     [SerializeField]
     protected int _level; //상속받은 PlayerStat에서 사용하기 위해서 protected를 붙여줌 
