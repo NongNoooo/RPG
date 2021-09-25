@@ -79,7 +79,6 @@ public class PlayerController : MonoBehaviour
         }
         else //멀면 이동
         {
-            NavMeshAgent nma = gameObject.GetComponent<NavMeshAgent>();
             //nma.CalculatePath
             
             float moveDist = stat.MoveSpeed * Time.deltaTime;  //캐릭터가 마우스를 찍은 곳에 도착하면 떨려서 추가
@@ -87,7 +86,6 @@ public class PlayerController : MonoBehaviour
             {
                 moveDist = dir.magnitude;
             }
-            nma.Move(dir.normalized * moveDist);
 
             Debug.DrawRay(transform.position, dir.normalized, Color.red);
             if(Physics.Raycast(transform.position+Vector3.up * 0.5f, dir, 1.0f, LayerMask.GetMask("Buildings"))) //건물위를 찍을경우 멈추지않고 이동하려해서 레이를 통해 건물을 인식할경우 멈추도록 만듬
@@ -96,6 +94,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
+            transform.position += dir.normalized * moveDist;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);
         }
     }
@@ -105,15 +104,21 @@ public class PlayerController : MonoBehaviour
     {
         if(canAttack)
         {
-            Debug.Log("공격");
+            Debug.Log("플레이어 공격");
             if(lockTarget != null)
             {
                 Stat targetStat = lockTarget.GetComponent<Stat>();
                 Stat myStat = gameObject.GetComponent<PlayerStat>();
                 //int damage = Mathf.Clamp(myStat.Attack - targetStat.Defense,0,100); //최소값을 0, 최대값을 100으로 지정
                 int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
-                Debug.Log("데미지" + damage);
+                Debug.Log(lockTarget.name + "에게 데미지" + damage);
                 targetStat.Hp -= damage;
+
+                if(targetStat.Hp <= 0)
+                {
+                    Destroy(lockTarget);
+                    lockTarget = null;
+                }
             }
             canAttack = false;
             attackCountDown = 0.0f;
@@ -211,6 +216,7 @@ public class PlayerController : MonoBehaviour
                     }
                 }
                 break;
+
             case Define.MouseEvent.PointerUp:
                 {
                     stopAttack = true; //마우스를 때면 공격을 멈추게 만듬

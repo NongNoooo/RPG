@@ -13,14 +13,24 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    public void setPlayer(GameObject _player)
+    {
+        player = _player;
     }
 
 
-    void LateUpdate() // 캐릭터 이동보다 나중에 스크립트가 실행되게 만들어서 화면이 떨리는것을 방지하기 위해 lateupdate를 사용
+    void LateUpdate() // 캐릭터 이동보다 나중에 실행되게 만들어서 화면이 떨리는것을 방지하기 위해 lateupdate를 사용
     {
         if(camMode == Define.CameraMode.QuarterView)
         {
+            if(player == null)
+            {
+                return;
+            }
+
             transform.position = player.transform.position + camPosition;
             transform.LookAt(player.transform);
         }
@@ -31,4 +41,5 @@ public class CameraController : MonoBehaviour
         camMode = Define.CameraMode.QuarterView;
         camPosition = camPos;
     }
+
 }

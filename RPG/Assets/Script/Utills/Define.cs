@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Define
 {
+    public enum WorldObject
+    {
+        Player,
+        Monster,
+    }
+
     public enum Layer
     {
         Ground = 8,
