@@ -4,21 +4,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    GameObject player;
-
-    GameObject monster;
 
     private void Start()
     {
-        player = Resources.Load<GameObject>("Prefabs/Character/Player");
-        Instantiate(player);
+        GameObject _player = Resources.Load<GameObject>("Prefabs/Character/Player");
+        GameObject player = Instantiate(_player);
+        Camera.main.GetComponent<CameraController>().setPlayer(player);
 
-        monster = Resources.Load<GameObject>("Prefabs/Character/Enemy1");
-        Instantiate(monster);
+        GameObject _monster = Resources.Load<GameObject>("Prefabs/Character/Enemy1");
+        GameObject monster = Instantiate(_monster);
 
-    }
-
-    private void Update()
-    {
     }
 }

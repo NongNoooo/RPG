@@ -11,14 +11,14 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     GameObject player = null;
 
-    void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-    }
-
     public void setPlayer(GameObject _player)
     {
         player = _player;
+    }
+
+    void Start()
+    {
+
     }
 
 
