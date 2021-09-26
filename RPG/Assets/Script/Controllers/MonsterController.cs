@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class MonsterController : MonoBehaviour //공용 controller를 작성하여 플레이어나 몬스터의 공통되는 상태등을 상속받아 작성해도되지만 처음부터 그렇게 하지않았기때문에 그냥 제작하였음
 {
+    
     public enum MonsterState
     {
         Idle,
@@ -14,17 +15,17 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
         MoveBack,
     }
 
-    MonsterState state;
+    public MonsterState state;
 
     Stat monsterStat;
 
-    NavMeshAgent nma;
+    public NavMeshAgent nma;
 
     PlayerStat playerStat;
 
     GameObject player;
 
-    GameObject lockTarget;
+    public GameObject lockTarget;
 
     Vector3 destPos;
 
@@ -38,10 +39,13 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
     [SerializeField]
     float attackRange = 2;
 
+    public bool chase = true;
+
     void Start()
     {
         monsterStat = GetComponent<Stat>();
         nma = gameObject.GetComponent<NavMeshAgent>();
+
 
         state = MonsterState.Idle;
 
@@ -54,6 +58,12 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
     void Update()
     {
         AttackCount();
+
+
+        //if(state != MonsterState.Moving && state != MonsterState.Attack)
+        //{
+        //    ResetPos();
+        //}
 
         ResetPos();
 
@@ -125,6 +135,7 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
 
     }
 
+    
     void UpdateAttack()
     {
         if(lockTarget != null)
@@ -163,14 +174,14 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
                 }
             }
 
-            if (playerStat.Hp >= 0)
+            if (playerStat.Hp <= 0)
             {
-                state = MonsterState.Idle;
+                state = MonsterState.MoveBack;
             }
             else
             {
                 float distance = (lockTarget.transform.position - transform.position).magnitude;
-                if(distance <= attackRange)
+                if (distance <= attackRange)
                 {
                     state = MonsterState.Attack;
                 }
@@ -179,10 +190,27 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
                     state = MonsterState.Moving;
                 }
             }
+
+            //if (playerStat.Hp >= 0)
+            //{
+            //    state = MonsterState.Idle;
+            //}
+            //else
+            //{
+            //    float distance = (lockTarget.transform.position - transform.position).magnitude;
+            //    if(distance <= attackRange)
+            //    {
+            //        state = MonsterState.Attack;
+            //    }
+            //    else
+            //    {
+            //        state = MonsterState.Moving;
+            //    }
+            //}
         }
         else
         {
-            state = MonsterState.Idle;
+            state = MonsterState.Moving;
         }
     }
 
@@ -194,13 +222,33 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
         }
     }
 
+    public float cHp;
+
     void ResetPos()
     {
         float incountRange = 20.0f;
 
         float distance = (firstPos - transform.position).magnitude;
-        if(incountRange <= distance)
+
+        //if (chase == false)
+        //{
+        //    state = MonsterState.MoveBack;
+        //}
+
+        //if(chase)
+        //{
+        //    if(lockTarget != null)
+        //    {
+        //        state = MonsterState.Moving;
+        //    }
+        //}
+
+        if (incountRange <= distance)
         {
+            Debug.Log("범위밖으로 나왔다");
+
+            //StartCoroutine("Back");
+            
             state = MonsterState.MoveBack;
         }
     }
@@ -212,12 +260,38 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
         nma.SetDestination(firstPos);
         nma.speed = monsterStat.MoveSpeed;
 
+        //playerStat = lockTarget.GetComponent<PlayerStat>();
+
+        //if ((lockTarget.transform.position - transform.position).magnitude < 10.0f)
+        //{
+        //    state = MonsterState.Moving;
+        //}
+
         float distance = (firstPos - transform.position).magnitude;
         if (distance <= 0.1f)
         {
             state = MonsterState.Idle;
         }
     }
+
+    //IEnumerator Back()
+    //{
+    //    while (chase)
+    //    {
+    //        cHp = monsterStat.Hp;
+
+    //        yield return new WaitForSeconds(5.0f);
+
+    //        if (monsterStat.Hp == cHp)
+    //        {
+    //            chase = false;
+    //        }
+    //        else
+    //        {
+    //            chase = true;
+    //        }
+    //    }
+    //}
 
     void CreateHpBar()
     {

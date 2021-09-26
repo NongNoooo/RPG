@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
         if (lockTarget != null)
         {
             float distance = (destPos - transform.position).magnitude;
-            if(distance <= 1/*사정거리*/)
+            if(distance <= 20/*사정거리*/)
             {
                 state = PlayerState.Attack;
                 return;
@@ -109,16 +109,22 @@ public class PlayerController : MonoBehaviour
             {
                 Stat targetStat = lockTarget.GetComponent<Stat>();
                 Stat myStat = gameObject.GetComponent<PlayerStat>();
-                //int damage = Mathf.Clamp(myStat.Attack - targetStat.Defense,0,100); //최소값을 0, 최대값을 100으로 지정
                 int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
                 Debug.Log(lockTarget.name + "에게 데미지" + damage);
                 targetStat.Hp -= damage;
 
-                if(targetStat.Hp <= 0)
+                //몬스터 moveback관련 
+                //MonsterController mc = lockTarget.GetComponent<MonsterController>();
+                //mc.chase = true;
+                //mc.state = MonsterController.MonsterState.Moving;
+                //mc.nma.SetDestination(mc.lockTarget.transform.position);ㅌ
+
+                if (targetStat.Hp <= 0)
                 {
                     Destroy(lockTarget);
                     lockTarget = null;
                 }
+                
             }
             canAttack = false;
             attackCountDown = 0.0f;
