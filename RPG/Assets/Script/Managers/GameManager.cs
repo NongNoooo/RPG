@@ -11,8 +11,11 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(_player);
         Camera.main.GetComponent<CameraController>().setPlayer(player);
 
-        GameObject go = new GameObject(name = "monsterFactory");
+        //GameObject go = new GameObject(name = "monsterFactory");
+        GameObject go = Instantiate(new GameObject(name = "monsterFactory"));
+        go.transform.parent = gameObject.transform;
         go.AddComponent<MonsterFactory>();
+        
 
         //GameObject _monster = Resources.Load<GameObject>("Prefabs/Character/Enemy1");
         //GameObject monster = Instantiate(_monster);

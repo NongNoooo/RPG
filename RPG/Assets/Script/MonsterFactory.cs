@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class MonsterFactory : MonoBehaviour
 {
-    int monsterCount = 0;
+    public int monsterCount = 0;
 
     int keepMonsterCount = 5;
 

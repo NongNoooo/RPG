@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3793565700078265039}
   - component: {fileID: 3793565700078265038}
   m_Layer: 9
-  m_Name: Enemy
+  m_Name: Enemy1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,8 +81,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a193ff079486049e5a77f2d6ca03582d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
+  nma: {fileID: 0}
+  lockTarget: {fileID: 0}
   scanRange: 10
   attackRange: 2
+  chase: 1
+  cHp: 0
 --- !u!114 &3793565700078265039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +217,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 3793565700781407162}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
@@ -238,6 +243,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HP_UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 3872742400856204666, guid: 4f35457e9781d4db48115325d99615fc,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3872742400856204669, guid: 4f35457e9781d4db48115325d99615fc,
         type: 3}

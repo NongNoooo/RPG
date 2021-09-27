@@ -11,8 +11,7 @@ public class PlayerController : MonoBehaviour
 
     PlayerState state;
 
-
-    GameObject lockTarget;
+    public GameObject lockTarget;
 
     int lMask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
 
@@ -29,6 +28,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        mf = GameObject.FindGameObjectWithTag("GameManager").GetComponentInChildren<MonsterFactory>();
+
         stat = gameObject.GetComponent<PlayerStat>();
         state = PlayerState.Idle;
 
@@ -113,15 +114,11 @@ public class PlayerController : MonoBehaviour
                 Debug.Log(lockTarget.name + "에게 데미지" + damage);
                 targetStat.Hp -= damage;
 
-                //몬스터 moveback관련 
-                //MonsterController mc = lockTarget.GetComponent<MonsterController>();
-                //mc.chase = true;
-                //mc.state = MonsterController.MonsterState.Moving;
-                //mc.nma.SetDestination(mc.lockTarget.transform.position);ㅌ
-
+                
                 if (targetStat.Hp <= 0)
                 {
                     Destroy(lockTarget);
+                    RemoveMonsterCount();
                     lockTarget = null;
                 }
                 
@@ -229,5 +226,11 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    public MonsterFactory mf;
+    void RemoveMonsterCount()
+    {
+        mf.monsterCount--;
     }
 }
