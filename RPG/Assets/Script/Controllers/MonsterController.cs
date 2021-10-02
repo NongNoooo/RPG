@@ -59,12 +59,6 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
     {
         AttackCount();
 
-
-        //if(state != MonsterState.Moving && state != MonsterState.Attack)
-        //{
-        //    ResetPos();
-        //}
-
         ResetPos();
 
         switch (state)
@@ -144,34 +138,20 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
             Quaternion quat = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Lerp(transform.rotation, quat, 20 * Time.deltaTime);
         }
-
         OnHitEvent();
-        
     }
-
     void OnHitEvent()
     {
 
         if (lockTarget != null)
         {
             playerStat = lockTarget.GetComponent<PlayerStat>();
-            monsterStat = gameObject.GetComponent<Stat>();
+            Stat stat = GetComponent<Stat>();
 
             if(attackCountDown >= attackCoolTime)
             {
-                int damage = Mathf.Max(0, monsterStat.Attack - playerStat.Defense);
-
-                Debug.Log("몬스터 공격");
-                Debug.Log(lockTarget.name + "에게 데미지" + damage);
-
-                playerStat.Hp -= damage;
-
+                playerStat.OnAttacked(stat);
                 attackCountDown = 0.0f;
-
-                if(playerStat.Hp <= 0)
-                {
-                    Destroy(lockTarget);
-                }
             }
 
             if (playerStat.Hp <= 0)
@@ -190,23 +170,6 @@ public class MonsterController : MonoBehaviour //공용 controller를 작성하�
                     state = MonsterState.Moving;
                 }
             }
-
-            //if (playerStat.Hp >= 0)
-            //{
-            //    state = MonsterState.Idle;
-            //}
-            //else
-            //{
-            //    float distance = (lockTarget.transform.position - transform.position).magnitude;
-            //    if(distance <= attackRange)
-            //    {
-            //        state = MonsterState.Attack;
-            //    }
-            //    else
-            //    {
-            //        state = MonsterState.Moving;
-            //    }
-            //}
         }
         else
         {

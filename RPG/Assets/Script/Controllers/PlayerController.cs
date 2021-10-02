@@ -106,13 +106,13 @@ public class PlayerController : MonoBehaviour
         if(canAttack)
         {
             Debug.Log("플레이어 공격");
+
             if(lockTarget != null)
             {
                 Stat targetStat = lockTarget.GetComponent<Stat>();
                 Stat myStat = gameObject.GetComponent<PlayerStat>();
-                int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
-                Debug.Log(lockTarget.name + "에게 데미지" + damage);
-                targetStat.Hp -= damage;
+
+                targetStat.OnAttacked(myStat);
 
                 
                 if (targetStat.Hp <= 0)

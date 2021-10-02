@@ -35,4 +35,29 @@ public class Stat : MonoBehaviour
         _defense = 5;
         _moveSpeed = 5.0f;
     }
+
+    public virtual void OnAttacked(Stat attacker)
+    {
+        int damage = Mathf.Max(0, attacker.Attack - Defense);
+        Hp -= damage;
+        if(Hp <= 0)
+        {
+            Hp = 0;
+            OnDead(attacker);
+        }
+    }
+
+    public virtual void OnDead(Stat attacker)
+    {
+        PlayerStat playerStat = attacker.GetComponent<PlayerStat>();
+        if(playerStat != null)
+        {
+            playerStat.Exp += 10;
+
+            Debug.Log("경험치 10 획득");
+        }
+
+        Destroy(gameObject);
+        Debug.Log(gameObject.name + " 사망");
+    }
 }
