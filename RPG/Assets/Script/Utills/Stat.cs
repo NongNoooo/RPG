@@ -47,6 +47,46 @@ public class Stat : MonoBehaviour
         }
     }
 
+    public virtual void OnSkilled(Stat attacker, int skillNumber)
+    {
+        if (skillNumber == 1)
+        {
+            PlayerStat ps = attacker.GetComponent<PlayerStat>();
+            int damage = Mathf.Max(0, ps.Qskill - Defense);
+            Hp -= damage;
+            if (Hp <= 0)
+            {
+                Hp = 0;
+                OnDead(attacker);
+            }
+        }
+        else if (skillNumber == 2)
+        {
+            PlayerStat ps = attacker.GetComponent<PlayerStat>();
+            int damage = Mathf.Max(0, ps.WskillSpread - Defense);
+            Hp -= damage;
+            if (Hp <= 0)
+            {
+                Hp = 0;
+                OnDead(attacker);
+            }
+        }
+
+    }
+
+    public virtual void OnSpreadQ(Stat attacker)
+    {
+        PlayerStat ps = attacker.GetComponent<PlayerStat>();
+        int damage = Mathf.Max(0, ps.QskillSpread - Defense);
+        Hp -= damage;
+        if (Hp <= 0)
+        {
+            Hp = 0;
+            OnDead(attacker);
+        }
+    }
+
+
     public virtual void OnDead(Stat attacker)
     {
         PlayerStat playerStat = attacker.GetComponent<PlayerStat>();

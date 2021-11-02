@@ -10,10 +10,20 @@ public class PlayerStat : Stat //공통되는 부분을 중복으로 사용하�
     int _gold;
     [SerializeField]
     int _maxExp;
+    [SerializeField]
+    int _qSkill;
+    [SerializeField]
+    int _qSkillSpread;
+    [SerializeField]
+    int _wSkillSpread;
+
 
     public int Exp { get { return _exp; } set { _exp = value; } }
     public int Gold { get { return _gold; } set { _gold = value; } }
     public int MaxExp { get { return _maxExp; } set { _maxExp = value; } }
+    public int Qskill { get { return _qSkill; } set { _qSkill = value; } }
+    public int QskillSpread { get { return _qSkillSpread; } set { _qSkillSpread = value; } }
+    public int WskillSpread { get { return _wSkillSpread; } set { _wSkillSpread = value; } }
 
     private void Start()
     {
@@ -27,6 +37,9 @@ public class PlayerStat : Stat //공통되는 부분을 중복으로 사용하�
         _gold = 0;
         _maxExp = 10;
 
+        _qSkill = 50;
+        _qSkillSpread = 30;
+        _wSkillSpread = 20;
     }
 
     public void Update()
@@ -43,6 +56,7 @@ public class PlayerStat : Stat //공통되는 부분을 중복으로 사용하�
     }
 
     public int statPoint = 0;
+
     void LevelUp()
     {
         if(_maxExp <= _exp)
@@ -65,4 +79,5 @@ public class PlayerStat : Stat //공통되는 부분을 중복으로 사용하�
             }
         }
     }
+
 }

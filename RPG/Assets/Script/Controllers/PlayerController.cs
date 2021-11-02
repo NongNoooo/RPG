@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     PlayerStat stat;
 
-    Vector3 destPos;
+    public Vector3 destPos;
 
     PlayerState state;
 

@@ -6,6 +6,11 @@ TagManager:
   tags:
   - HpBar
   - GameManager
+  - Enemy
+  - Q_Skill
+  - Q_Skill_Spread
+  - Q_Skill_Spread2
+  - Map
   layers:
   - Default
   - TransparentFX
@@ -18,8 +23,8 @@ TagManager:
   - Ground
   - Monster
   - Buildings
-  - 
-  - 
+  - bullet
+  - Wskills
   - 
   - 
   - 

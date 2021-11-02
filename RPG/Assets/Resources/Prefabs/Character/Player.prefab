@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 2744365398649220857}
   - component: {fileID: 2744365398649220863}
   - component: {fileID: 2744365398649220862}
+  - component: {fileID: 5380863236997458564}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -141,6 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0e5a9ba198f4a92908a2bd60cb0a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockTarget: {fileID: 0}
+  mf: {fileID: 0}
 --- !u!136 &2744365398649220857
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -175,6 +178,8 @@ MonoBehaviour:
   _moveSpeed: 0
   _exp: 0
   _gold: 0
+  _maxExp: 0
+  statPoint: 0
 --- !u!114 &2744365398649220862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,5 +190,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99c70e40082fe4ef984840465bc31dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5380863236997458564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2744365398649220836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dedc40a23c8c4234a1a5f61856adc2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
